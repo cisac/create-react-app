@@ -17,6 +17,19 @@ const url = require('url');
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
+// custom-multientry
+let appEntries = {
+  indexEntries: [],
+  appSrcEntries: [],
+};
+
+try {
+  appEntries = require(resolveApp('app-entries.json'));
+} catch (err) {
+  // Ignore 'cannot find module pods.json on install'
+}
+// custom-multientry end
+
 const envPublicUrl = process.env.PUBLIC_URL;
 
 function ensureSlash(inputPath, needsSlash) {
@@ -73,6 +86,12 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
+// custom-multientry
+// main app entry point and src folder
+const appIndexJs = resolveModule(resolveApp, 'src/index');
+const appSrc = resolveApp('src');
+// custom-multientry end
+
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
@@ -90,6 +109,15 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
+
+  // custom-multientry
+  indexEntries: [appIndexJs].concat(
+    appEntries.indexEntries.map(entry => resolveApp(entry))
+  ),
+  appSrcEntries: [appSrc].concat(
+    appEntries.appSrcEntries.map(entry => resolveApp(entry))
+  ),
+  // customscript-end
 };
 
 // @remove-on-eject-begin
@@ -117,6 +145,15 @@ module.exports = {
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
   appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+
+  // custom-multientry
+  indexEntries: [appIndexJs].concat(
+    appEntries.indexEntries.map(entry => resolveApp(entry))
+  ),
+  appSrcEntries: [appSrc].concat(
+    appEntries.appSrcEntries.map(entry => resolveApp(entry))
+  ),
+  // customscript-end
 };
 
 const ownPackageJson = require('../package.json');

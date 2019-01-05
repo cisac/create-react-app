@@ -256,6 +256,9 @@ module.exports = function(
   }
   console.log();
   console.log('Happy hacking!');
+
+  console.log();
+  console.log(chalk.red('Created with custom-react-scripts'));
 };
 
 function isReactInstalled(appPackage) {

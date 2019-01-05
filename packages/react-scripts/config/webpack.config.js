@@ -148,7 +148,7 @@ module.exports = function(webpackEnv) {
       isEnvDevelopment &&
         require.resolve('react-dev-utils/webpackHotDevClient'),
       // Finally, this is your app's code:
-      paths.appIndexJs,
+      ...paths.indexEntries,
       // We include the app code last so that if there is a runtime error during
       // initialization, it doesn't blow up the WebpackDevServer client, and
       // changing JS code would still trigger a refresh.
@@ -323,7 +323,7 @@ module.exports = function(webpackEnv) {
               loader: require.resolve('eslint-loader'),
             },
           ],
-          include: paths.appSrc,
+          include: paths.appSrcEntries,
         },
         {
           // "oneOf" will traverse all following loaders until one will
@@ -345,7 +345,7 @@ module.exports = function(webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
+              include: paths.appSrcEntries,
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
@@ -638,7 +638,7 @@ module.exports = function(webpackEnv) {
             '!**/src/setupProxy.*',
             '!**/src/setupTests.*',
           ],
-          watch: paths.appSrc,
+          watch: paths.appSrcEntries,
           silent: true,
           formatter: typescriptFormatter,
         }),
